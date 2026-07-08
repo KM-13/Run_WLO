@@ -1,8 +1,8 @@
 {
-  "desktop-pc": {
+  "letsnote": {
     "mac": "00:11:22:33:44:55",
     "ip": "192.168.1.255",
     "port": 9,
-    "memo": "リビングのデスクトップPC。BIOSでWake on LAN有効化済み。"
+    "memo": "レッツノート。BIOSの「Power on by LAN機能」を許可済み。ACアダプター+有線LAN接続で運用。"
   }
 }

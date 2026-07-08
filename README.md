@@ -8,7 +8,32 @@
 | ファイル | 内容 |
 | --- | --- |
 | `wol.py` | マジックパケット送信スクリプト(Python 3 標準ライブラリのみ、追加インストール不要) |
+| `setup_target_pc.ps1` | **ターゲットPC(レッツノート)で実行する自動セットアップスクリプト**。ステップ1・3・4の大部分を自動化 |
 | `devices.example.json` | 起動対象PCの登録ファイルの雛形。`devices.json` にコピーして使う |
+
+## レッツノートを設定する(いちばん簡単な方法)
+
+ターゲットのレッツノートで以下を実行すると、Windows側の設定がまとめて終わります。
+
+1. このリポジトリの `setup_target_pc.ps1` をレッツノートにダウンロードする。
+2. スタートボタンを右クリック → 「ターミナル(管理者)」または「Windows PowerShell(管理者)」を開く。
+3. ダウンロードしたフォルダーに移動して実行:
+
+   ```powershell
+   cd $env:USERPROFILE\Downloads
+   powershell -ExecutionPolicy Bypass -File .\setup_target_pc.ps1
+   ```
+
+4. 画面に表示される **MACアドレスをメモ**(デスクトップの `wol_mac_address.txt` にも保存されます)。
+5. 表示される「残りの手動作業」(BIOS設定・自動ログイン)を行う。
+
+### レッツノートのBIOS設定(ステップ2)
+
+1. PCを再起動し、**Panasonicロゴが出た瞬間に F2 キーを連打**してBIOS(セットアップユーティリティ)に入る。
+2. **「詳細」メニュー → 「Power on by LAN機能」を「許可」** に変更する。
+3. **F10** で保存して終了。
+
+> レッツノートでシャットダウン状態からWOLするには、**ACアダプターとLANケーブルを挿したまま**にしておく必要があります(バッテリー駆動ではLANポートに通電されません)。
 
 ## クイックスタート(中継端末・LAN内のPCから)
 
@@ -18,7 +43,7 @@ python3 wol.py 00:11:22:33:44:55
 
 # デバイスを登録して名前で起動
 cp devices.example.json devices.json   # 中身を自分のPCのMACに書き換える
-python3 wol.py --device desktop-pc
+python3 wol.py --device letsnote
 
 # 登録済みデバイスの一覧
 python3 wol.py --list
@@ -40,8 +65,8 @@ python3 wol.py --list
 
 ### ステップ2: BIOS/UEFI設定(ターゲットPC)
 
-1. PC起動直後に F1 / F2 / Del キー等を連打してBIOS/UEFI画面に入る。
-2. 「Power」や「Advanced」メニューから **Wake on LAN** / **Preboot Wake On LAN** / **Power On by PCI-E** などの項目を **Enabled** にする。
+1. PC起動直後に F1 / F2 / Del キー等を連打してBIOS/UEFI画面に入る(**レッツノートは F2**)。
+2. 「Power」や「Advanced」メニューから **Wake on LAN** / **Preboot Wake On LAN** / **Power On by PCI-E** などの項目を **Enabled** にする(**レッツノートは「詳細」→「Power on by LAN機能」→「許可」**)。
 3. 設定を保存して再起動。
 4. ✅ 完了目安: BIOS設定が保存され、シャットダウン中もLANポートのリンクランプが点灯している。
 
@@ -81,7 +106,7 @@ Windowsの場合:
 ### ステップ6: 遠隔起動の実行(操作用スマホ)
 
 - **VPN経由の場合**: スマホでVPN接続 → WOLアプリ(RemoteBoot、Wake On Lan 等)にMACアドレスを登録し、マジックパケットを送信。
-- **中継端末経由の場合**: SSHクライアント(Termius等)で中継端末に接続し、`python3 wol.py --device desktop-pc` を実行。
+- **中継端末経由の場合**: SSHクライアント(Termius等)で中継端末に接続し、`python3 wol.py --device letsnote` を実行。
 - ✅ 完了目安: パケット着信をトリガーに、自宅PCがコールドスタートする。
 
 ---
