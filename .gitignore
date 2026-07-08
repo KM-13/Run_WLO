@@ -1,0 +1,5 @@
+# 個人環境のMACアドレス等を含むため管理対象外
+devices.json
+
+__pycache__/
+*.pyc
